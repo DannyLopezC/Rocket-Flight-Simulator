@@ -67,7 +67,7 @@ void Mesh::clearMesh()
 	}
 
 	indexCount = 0;
-	printf("Mesh cleared!");
+	printf("Mesh cleared!\n");
 }
 
 Mesh::~Mesh()

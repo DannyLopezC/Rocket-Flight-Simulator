@@ -41,7 +41,8 @@ Material shinyMaterial;
 Material dullMaterial;
 
 Model robot;
-Model blackhawk;
+Model road;
+Model car;
 
 DirectionalLight mainLight;
 PointLight pointLights[MAX_POINT_LIGHTS];
@@ -162,20 +163,14 @@ int main()
 
 	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 5.0f, 0.5f);
 
-	brickTexture = Texture("assets/textures/brick.png");
-	brickTexture.loadTextureA();
-	
-	dirtTexture = Texture("assets/textures/dirt.png");
-	dirtTexture.loadTextureA();
-
 	plainTexture = Texture("assets/textures/plain.png");
 	plainTexture.loadTextureA();
 
-	robot = Model();
-	robot.loadModel("assets/models/robot.fbx");
+	road = Model();
+	road.loadModel("assets/models/road.obj");
 
-	blackhawk = Model();
-	blackhawk.loadModel("assets/models/uh60.obj");
+	car = Model();
+	car.loadModel("assets/models/car.fbx", "car_textures/");
 
 	shinyMaterial = Material(0.8f, 256);
 	dullMaterial = Material(0.3f, 4);
@@ -273,43 +268,21 @@ int main()
 			glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
 
 			glm::mat4 model(1.0f);
-			model = glm::translate(model, glm::vec3(5.0f, 0.0f, -2.5f));
-			//model = glm::rotate(model, curAngle * toRadians, glm::vec3(1, 0, 0));
-			//model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
 
+			model = glm::translate(model, glm::vec3(-3.0f, -1.0f, 0.0f));
+			//model = glm::rotate(model, -90.0f * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+			model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-
-			brickTexture.useTexture();
-			dullMaterial.useMaterial(uniformSpecularIntensity, uniformShininess);
-			meshList[0]->renderMesh();
-
-			model = glm::translate(model, glm::vec3(0.0f, -2.0f, 0.0f));
-			//model = glm::rotate(model, curAngle * toRadians, glm::vec3(1, 0, 0));
-			//model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
-
-			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-
-			dirtTexture.useTexture();
 			shinyMaterial.useMaterial(uniformSpecularIntensity, uniformShininess);
-			meshList[1]->renderMesh();
-
-			glm::mat4 model1(1.0f);
-			model1 = glm::translate(model1, glm::vec3(-3.0f, -1.0f, 0.0f));
-			model1 = glm::rotate(model1, -90.0f * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-			model1 = glm::scale(model1, glm::vec3(1.0f, 1.0f, 1.0f));
-
-			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model1));
-
-			shinyMaterial.useMaterial(uniformSpecularIntensity, uniformShininess);
-			robot.renderModel();
+			road.renderModel();
 
 			model = glm::mat4(1.0f);
-			model = glm::translate(model, glm::vec3(-3.0f, 2.0f, 0.0f));
-			model = glm::rotate(model, -90.0f * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+			model = glm::translate(model, glm::vec3(3.0f, 0.0f, 0.0f));
+			//model = glm::rotate(model, -90.0f * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
 			model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
 			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 			shinyMaterial.useMaterial(uniformSpecularIntensity, uniformShininess);
-			blackhawk.renderModel();
+			car.renderModel();
 
 		glUseProgram(0);
 

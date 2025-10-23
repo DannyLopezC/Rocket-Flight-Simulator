@@ -4,19 +4,21 @@ Model::Model()
 {
 }
 
-void Model::loadModel(const std::string& fileName)
+void Model::loadModel(const std::string& fileName, const std::string& texturesFileName)
 {
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(fileName,
 		aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices);
 
 	if (!scene) {
-		printf("Model (%s) failed to load: %s", fileName.c_str(), importer.GetErrorString());
+		printf("Model (%s) failed to load: %s\n", fileName.c_str(), importer.GetErrorString());
 		return;
 	}
 
+	printf("charging model %s\n", fileName.c_str());
+
 	loadNode(scene->mRootNode, scene);
-	loadMaterials(scene);
+	loadMaterials(scene, texturesFileName);
 }
 
 void Model::renderModel()
@@ -98,7 +100,7 @@ void Model::loadMesh(aiMesh* mesh, const aiScene* scene)
 	meshToTex.push_back(mesh->mMaterialIndex);
 }
 
-void Model::loadMaterials(const aiScene* scene)
+void Model::loadMaterials(const aiScene* scene, const std::string& texturesFileName)
 {
 	textureList.resize(scene->mNumMaterials);
 
@@ -113,8 +115,8 @@ void Model::loadMaterials(const aiScene* scene)
 			if (material->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS) {
 				int index = std::string(path.data).rfind("\\");
 				std::string fileName = std::string(path.data).substr(index + 1);
-
-				std::string texPath = std::string("assets/textures/") + fileName;
+				
+				std::string texPath = std::string("assets/textures/" + texturesFileName) + fileName;
 
 				textureList[i] = new Texture(texPath.c_str());
 

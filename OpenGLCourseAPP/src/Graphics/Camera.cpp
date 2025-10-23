@@ -51,22 +51,22 @@ void Camera::keyControl(bool* keys, GLfloat deltaTime)
 
 void Camera::mouseControl(GLfloat xChange, GLfloat yChange)
 {
+	// Ignore unrealistic spikes
 	if (fabs(xChange) > 100.0f || fabs(yChange) > 100.0f)
 		return;
 
-	yaw += xChange * turnSpeed;
-	pitch += yChange * turnSpeed;
+	xChange *= turnSpeed;
+	yChange *= turnSpeed;
 
-	pitch = glm::clamp(pitch, -89.0f, 89.0f);
+	yaw += xChange;
+	pitch += yChange;
 
-	// Smooth
-	static float smoothYaw = yaw;
-	static float smoothPitch = pitch;
-	smoothYaw = glm::mix(smoothYaw, yaw, 0.2f);
-	smoothPitch = glm::mix(smoothPitch, pitch, 0.2f);
+	if (pitch > 89.0f)  pitch = 89.0f;
+	if (pitch < -89.0f) pitch = -89.0f;
 
-	yaw = smoothYaw;
-	pitch = smoothPitch;
+	// keep yaw bounded
+	if (yaw > 360.0f) yaw -= 360.0f;
+	else if (yaw < 0.0f) yaw += 360.0f;
 
 	update();
 }

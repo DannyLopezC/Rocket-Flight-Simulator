@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <vector>
 #include <string>
 
@@ -15,7 +16,7 @@ class Model
 public:
 	Model();
 
-	void loadModel(const std::string& fileName);
+	void loadModel(const std::string& fileName, const std::string& texturesFileName = "");
 	void renderModel();
 	void clearModel();
 
@@ -24,7 +25,7 @@ private:
 
 	void loadNode(aiNode* node, const aiScene* scene);
 	void loadMesh(aiMesh* mesh, const aiScene* scene);
-	void loadMaterials(const aiScene* scene);
+	void loadMaterials(const aiScene* scene, const std::string& texturesFileName);
 
 	std::vector<Mesh*> meshList;
 	std::vector<Texture*> textureList;
