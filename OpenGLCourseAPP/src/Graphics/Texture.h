@@ -1,6 +1,7 @@
 #pragma once
 #include <GL/glew.h>
 #include "../Core/stb_image.h"
+#include <filesystem>
 
 class Texture
 {
@@ -13,6 +14,7 @@ public:
 
 	void useTexture();
 	void clearTexture();
+	void createFromData(unsigned char* data, int width, int height, GLenum format);
 
 	~Texture();
 

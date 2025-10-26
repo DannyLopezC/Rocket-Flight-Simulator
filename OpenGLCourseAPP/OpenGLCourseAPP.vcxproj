@@ -23,7 +23,15 @@
     <None Include="assets\shaders\shader.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Core\Application.cpp" />
+    <ClCompile Include="src\Core\Input.cpp" />
+    <ClCompile Include="src\Core\Time.cpp" />
     <ClCompile Include="src\Core\Window.cpp" />
+    <ClCompile Include="src\Game\Car.cpp" />
+    <ClCompile Include="src\Game\Game.cpp" />
+    <ClCompile Include="src\Game\GameObject.cpp" />
+    <ClCompile Include="src\Game\Physics.cpp" />
+    <ClCompile Include="src\Game\Track.cpp" />
     <ClCompile Include="src\Graphics\Camera.cpp" />
     <ClCompile Include="src\Graphics\Lightning\DirectionalLight.cpp" />
     <ClCompile Include="src\Graphics\Lightning\Light.cpp" />
@@ -32,14 +40,23 @@
     <ClCompile Include="src\Graphics\Material.cpp" />
     <ClCompile Include="src\Graphics\Mesh.cpp" />
     <ClCompile Include="src\Graphics\Model.cpp" />
+    <ClCompile Include="src\Graphics\Renderer.cpp" />
     <ClCompile Include="src\Graphics\Shader.cpp" />
     <ClCompile Include="src\Graphics\Texture.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Core\Application.h" />
     <ClInclude Include="src\Core\CommonValues.h" />
+    <ClInclude Include="src\Core\Input.h" />
     <ClInclude Include="src\Core\stb_image.h" />
+    <ClInclude Include="src\Core\Time.h" />
     <ClInclude Include="src\Core\Window.h" />
+    <ClInclude Include="src\Game\Car.h" />
+    <ClInclude Include="src\Game\Game.h" />
+    <ClInclude Include="src\Game\GameObject.h" />
+    <ClInclude Include="src\Game\Physics.h" />
+    <ClInclude Include="src\Game\Track.h" />
     <ClInclude Include="src\Graphics\Camera.h" />
     <ClInclude Include="src\Graphics\Lightning\DirectionalLight.h" />
     <ClInclude Include="src\Graphics\Lightning\Light.h" />
@@ -48,6 +65,7 @@
     <ClInclude Include="src\Graphics\Material.h" />
     <ClInclude Include="src\Graphics\Mesh.h" />
     <ClInclude Include="src\Graphics\Model.h" />
+    <ClInclude Include="src\Graphics\Renderer.h" />
     <ClInclude Include="src\Graphics\Shader.h" />
     <ClInclude Include="src\Graphics\Texture.h" />
   </ItemGroup>
@@ -110,6 +128,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)..\External Libs\GLEW\include;$(SolutionDir)..\External Libs\GLFW\include;$(SolutionDir)..\External Libs\GLM;$(SolutionDir)..\External Libs\ASSIMP\include;$(ProjectDir)src;$(ProjectDir)src\Core;$(ProjectDir)src\Graphics;$(ProjectDir)src\Graphics\Lightning;$(ProjectDir)assets;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -127,6 +146,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)..\External Libs\GLEW\include;$(SolutionDir)..\External Libs\GLFW\include;$(SolutionDir)..\External Libs\GLM;$(SolutionDir)..\External Libs\ASSIMP\include;$(ProjectDir)src;$(ProjectDir)src\Core;$(ProjectDir)src\Graphics;$(ProjectDir)src\Graphics\Lightning;$(ProjectDir)assets;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -144,6 +164,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)..\External Libs\GLEW\include;$(SolutionDir)..\External Libs\GLFW\include;$(SolutionDir)..\External Libs\GLM;$(SolutionDir)..\External Libs\ASSIMP\include;$(ProjectDir)src;$(ProjectDir)src\Core;$(ProjectDir)src\Graphics;$(ProjectDir)src\Graphics\Lightning;$(ProjectDir)assets;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -161,6 +182,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)..\External Libs\GLEW\include;$(SolutionDir)..\External Libs\GLFW\include;$(SolutionDir)..\External Libs\GLM;$(SolutionDir)..\External Libs\ASSIMP\include;$(ProjectDir)src;$(ProjectDir)src\Core;$(ProjectDir)src\Graphics;$(ProjectDir)src\Graphics\Lightning;$(ProjectDir)assets;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
