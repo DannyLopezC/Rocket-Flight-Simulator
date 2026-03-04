@@ -10,6 +10,9 @@
 #include "Graphics/Lightning/DirectionalLight.h"
 #include "Graphics/Lightning/PointLight.h"
 #include "Graphics/Lightning/SpotLight.h"
+#include "Graphics/PrimitiveFactory.h"
+
+#include "Simulation/Ball.h"
 
 class Application
 {
@@ -21,12 +24,9 @@ public:
     void Run();
 
 private:
-    void CreateObjects();
-    void CreateShaders();
+    void createShaders();
 
-private:
     Window mainWindow;
-    std::vector<Mesh*> meshList;
     std::vector<Shader*> shaderList;
     Camera camera;
 
@@ -37,10 +37,19 @@ private:
     Model road;
     Model car;
 
+    PrimitiveFactory primitiveFactory;
+    Mesh* floor;
+    Mesh* circle;
+
     DirectionalLight mainLight;
     PointLight pointLights[MAX_POINT_LIGHTS];
     SpotLight spotLights[MAX_SPOT_LIGHTS];
 
     GLfloat deltaTime;
     GLfloat lastTime;
+
+    Ball ball;
+    float gravity = 9.8f;
+    float restitution = 0.8f;
+    float floorY = -7.5f;
 };

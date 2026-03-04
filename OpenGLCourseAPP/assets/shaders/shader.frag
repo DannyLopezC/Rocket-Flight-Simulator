@@ -124,8 +124,9 @@ vec4 calcSpotLights(){
 
 void main()
 {
-	vec4 finalColor = calcDirectionalLight();
-	finalColor += calcPointLights();
-	finalColor += calcSpotLights();
-	color = texture(tex, TexCoord) * finalColor;
+	//vec4 finalColor = calcDirectionalLight();
+	//finalColor += calcPointLights();
+	//finalColor += calcSpotLights();
+	//color = texture(tex, TexCoord) * finalColor;
+	color = vec4(1, 1, 1, 1); // blanco fijo
 }

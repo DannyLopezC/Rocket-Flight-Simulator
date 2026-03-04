@@ -19,14 +19,14 @@
     <Filter Include="src\Core">
       <UniqueIdentifier>{157dcba5-e19d-434e-90be-686056132412}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Game">
-      <UniqueIdentifier>{aa3e4be3-6f35-442d-b099-08e8f4928924}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\Graphics">
       <UniqueIdentifier>{f0cdf497-3b5c-4d61-8dd8-845c8f9d73b1}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Graphics\Lightning">
       <UniqueIdentifier>{85742c0e-ade1-405a-9b88-84fdccc7b458}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Simulation">
+      <UniqueIdentifier>{1e8619a5-b3b8-44c0-8a27-f34fd7e4eb40}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -83,23 +83,17 @@
     <ClCompile Include="src\Graphics\Renderer.cpp">
       <Filter>src\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Car.cpp">
-      <Filter>src\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Game.cpp">
-      <Filter>src\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\GameObject.cpp">
-      <Filter>src\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Physics.cpp">
-      <Filter>src\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\Track.cpp">
-      <Filter>src\Game</Filter>
-    </ClCompile>
     <ClCompile Include="src\Core\stb_image.cpp">
       <Filter>src\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Simulation\Ball.cpp">
+      <Filter>src\Simulation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Simulation\Simulation.cpp">
+      <Filter>src\Simulation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\PrimitiveFactory.cpp">
+      <Filter>src\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -151,20 +145,14 @@
     <ClInclude Include="src\Graphics\Renderer.h">
       <Filter>src\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Car.h">
-      <Filter>src\Game</Filter>
+    <ClInclude Include="src\Simulation\Ball.h">
+      <Filter>src\Simulation</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Game.h">
-      <Filter>src\Game</Filter>
+    <ClInclude Include="src\Simulation\Simulation.h">
+      <Filter>src\Simulation</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\GameObject.h">
-      <Filter>src\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Physics.h">
-      <Filter>src\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\Track.h">
-      <Filter>src\Game</Filter>
+    <ClInclude Include="src\Graphics\PrimitiveFactory.h">
+      <Filter>src\Graphics</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

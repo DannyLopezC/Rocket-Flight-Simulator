@@ -27,11 +27,6 @@
     <ClCompile Include="src\Core\Input.cpp" />
     <ClCompile Include="src\Core\stb_image.cpp" />
     <ClCompile Include="src\Core\Window.cpp" />
-    <ClCompile Include="src\Game\Car.cpp" />
-    <ClCompile Include="src\Game\Game.cpp" />
-    <ClCompile Include="src\Game\GameObject.cpp" />
-    <ClCompile Include="src\Game\Physics.cpp" />
-    <ClCompile Include="src\Game\Track.cpp" />
     <ClCompile Include="src\Graphics\Camera.cpp" />
     <ClCompile Include="src\Graphics\Lightning\DirectionalLight.cpp" />
     <ClCompile Include="src\Graphics\Lightning\Light.cpp" />
@@ -40,10 +35,13 @@
     <ClCompile Include="src\Graphics\Material.cpp" />
     <ClCompile Include="src\Graphics\Mesh.cpp" />
     <ClCompile Include="src\Graphics\Model.cpp" />
+    <ClCompile Include="src\Graphics\PrimitiveFactory.cpp" />
     <ClCompile Include="src\Graphics\Renderer.cpp" />
     <ClCompile Include="src\Graphics\Shader.cpp" />
     <ClCompile Include="src\Graphics\Texture.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Simulation\Ball.cpp" />
+    <ClCompile Include="src\Simulation\Simulation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Core\Application.h" />
@@ -51,11 +49,6 @@
     <ClInclude Include="src\Core\Input.h" />
     <ClInclude Include="src\Core\stb_image.h" />
     <ClInclude Include="src\Core\Window.h" />
-    <ClInclude Include="src\Game\Car.h" />
-    <ClInclude Include="src\Game\Game.h" />
-    <ClInclude Include="src\Game\GameObject.h" />
-    <ClInclude Include="src\Game\Physics.h" />
-    <ClInclude Include="src\Game\Track.h" />
     <ClInclude Include="src\Graphics\Camera.h" />
     <ClInclude Include="src\Graphics\Lightning\DirectionalLight.h" />
     <ClInclude Include="src\Graphics\Lightning\Light.h" />
@@ -64,9 +57,12 @@
     <ClInclude Include="src\Graphics\Material.h" />
     <ClInclude Include="src\Graphics\Mesh.h" />
     <ClInclude Include="src\Graphics\Model.h" />
+    <ClInclude Include="src\Graphics\PrimitiveFactory.h" />
     <ClInclude Include="src\Graphics\Renderer.h" />
     <ClInclude Include="src\Graphics\Shader.h" />
     <ClInclude Include="src\Graphics\Texture.h" />
+    <ClInclude Include="src\Simulation\Ball.h" />
+    <ClInclude Include="src\Simulation\Simulation.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

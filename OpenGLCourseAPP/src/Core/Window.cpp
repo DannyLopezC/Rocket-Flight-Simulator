@@ -78,7 +78,7 @@ int Window::initialise()
 
 	// handle callbacks (like keys)
 	createCallbacks();
-	glfwSetInputMode(mainWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	//glfwSetInputMode(mainWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	// allow mordern extension features
 	glewExperimental = GL_TRUE;
