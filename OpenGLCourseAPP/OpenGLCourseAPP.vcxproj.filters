@@ -95,6 +95,9 @@
     <ClCompile Include="src\Core\Button.cpp">
       <Filter>src\Core</Filter>
     </ClCompile>
+    <ClCompile Include="src\Core\Input.cpp">
+      <Filter>src\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Core\CommonValues.h">
@@ -152,6 +155,9 @@
       <Filter>src\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\Button.h">
+      <Filter>src\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Input.h">
       <Filter>src\Core</Filter>
     </ClInclude>
   </ItemGroup>

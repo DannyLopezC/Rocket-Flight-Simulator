@@ -1,9 +1,11 @@
 #include "Camera.h"
 
-
 Camera::Camera()
 {
-	position = glm::vec3(0,0,0);
+	position = glm::vec3(0, 0, 0);
+	right = glm::vec3(0, 0, 0);
+	roll = 0;
+	up = glm::vec3(0,0,0);
 	worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
 	yaw = 0;
 	pitch = 0;

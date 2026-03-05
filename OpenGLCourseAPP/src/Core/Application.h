@@ -1,6 +1,9 @@
 #pragma once
 #include <vector>
+#include "Core/Button.h"
+#include "Core/Input.h"
 #include "Core/Window.h"
+
 #include "Graphics/Mesh.h"
 #include "Graphics/Shader.h"
 #include "Graphics/Camera.h"
@@ -12,10 +15,10 @@
 #include "Graphics/Lightning/SpotLight.h"
 #include "Graphics/PrimitiveFactory.h"
 #include "Graphics/Trail.h"
-#include "Button.h"
 
 #include "Simulation/Ball.h"
 #include "Simulation/Simulation.h"
+
 
 class Application
 {
@@ -53,4 +56,6 @@ private:
     float trajectoryTimer = 0.0f;
 
     Button* restartBtn;
+
+    Input input;
 };

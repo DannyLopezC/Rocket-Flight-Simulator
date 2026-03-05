@@ -38,6 +38,9 @@ void Application::Init()
     mainWindow = Window(1366, 768);
     mainWindow.initialise();
 
+    input.init(mainWindow.getWindow());
+    input.setWindowSize((int)mainWindow.getBufferWidth(), (int)mainWindow.getBufferHeight());
+
     createShaders();
 
     camera = Camera(glm::vec3(0.0f, 5.0f, 20.0f),
@@ -107,10 +110,16 @@ void Application::Run()
         deltaTime = now - lastTime;
         lastTime = now;
 
-        if (ball.getHasBounced()) {
-            trail->clear();
-            ball.restart();
-            trajectoryTimer = 0.0f;
+        // --- Mouse Input ---
+        float mx = input.getMouseXUI();
+        float my = input.getMouseYUI();
+
+        if (input.mousePressed(GLFW_MOUSE_BUTTON_LEFT)) {
+            if (restartBtn->buttonPressed(mx, my)) {
+                trail->clear();
+                ball.restart();
+                trajectoryTimer = 0.0f;
+            }
         }
 
         ball.update(deltaTime * 1.0f, Simulation::gravity);
@@ -125,6 +134,7 @@ void Application::Run()
         }
 
         glfwPollEvents();
+        input.update();
 
         glClearColor(0, 0, 0, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

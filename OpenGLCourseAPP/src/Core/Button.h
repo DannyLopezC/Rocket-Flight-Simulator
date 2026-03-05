@@ -19,6 +19,8 @@ public:
 	void render(GLuint uniformModel, GLuint colorLoc);
 	void setColor(glm::vec4 color);
 
+	bool buttonPressed(float mx, float my) const;
+
 	glm::vec3 getPos() const { return pos; }
 	glm::vec3 getScale() const { return scale; }
 	glm::vec3 getRotation() const { return rotation; }
@@ -29,6 +31,9 @@ private:
 	glm::vec3 scale;
 	glm::vec3 rotation;
 	float rotationAngle;
+
+	float width;
+	float height;
 
 	Texture tex;
 	Material mat;

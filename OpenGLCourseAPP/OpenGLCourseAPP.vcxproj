@@ -25,6 +25,7 @@
   <ItemGroup>
     <ClCompile Include="src\Core\Application.cpp" />
     <ClCompile Include="src\Core\Button.cpp" />
+    <ClCompile Include="src\Core\Input.cpp" />
     <ClCompile Include="src\Core\stb_image.cpp" />
     <ClCompile Include="src\Core\Window.cpp" />
     <ClCompile Include="src\Graphics\Camera.cpp" />
@@ -47,6 +48,7 @@
     <ClInclude Include="src\Core\Application.h" />
     <ClInclude Include="src\Core\Button.h" />
     <ClInclude Include="src\Core\CommonValues.h" />
+    <ClInclude Include="src\Core\Input.h" />
     <ClInclude Include="src\Core\stb_image.h" />
     <ClInclude Include="src\Core\Window.h" />
     <ClInclude Include="src\Graphics\Camera.h" />

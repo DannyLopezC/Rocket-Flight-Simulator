@@ -7,6 +7,9 @@ Button::Button(float width, float height, Material& mat, Texture& tex)
 	rotation = glm::vec3(0.0f, 0.0f, 1.0f);
 	rotationAngle = 0;
 
+	this->width = width;
+	this->height = height;
+
 	buttonMesh = PrimitiveFactory::createUIQuad(width, height);
 
 	this->mat = mat;
@@ -34,6 +37,16 @@ void Button::setRotation(glm::vec3 rotation, float rotationAngle)
 void Button::setColor(glm::vec4 color)
 {
 	this->color = color;
+}
+
+bool Button::buttonPressed(float mx, float my) const
+{
+	float left = pos.x - width / 2;
+	float right = pos.x + width / 2;
+	float bottom = pos.y - height / 2;
+	float up = pos.y + height / 2;
+
+	return mx >= left && mx <= right && my >= bottom && my <= up;
 }
 
 void Button::render(GLuint uniformModel, GLuint colorLoc)

@@ -15,8 +15,9 @@ public:
 
 	int initialise();
 
-	GLint getBufferWidth() { return bufferWidth; }
-	GLint getBufferHeight() { return bufferHeight; }
+	GLint getBufferWidth() const { return bufferWidth; }
+	GLint getBufferHeight() const { return bufferHeight; }
+	GLFWwindow* getWindow() const { return mainWindow; }
 
 	bool getShouldClose() { return glfwWindowShouldClose(mainWindow); }
 
