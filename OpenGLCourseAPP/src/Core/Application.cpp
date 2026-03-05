@@ -69,7 +69,7 @@ void Application::Init()
     float h = (float)mainWindow.getBufferHeight();
     float btnW = 120.0f, btnH = 50.0f, margin = 20.0f;
 
-    restartBtn = new Button(304.0f, 304.0f, shinyMaterial, resetTexture);
+    restartBtn = new Button(273.0f, 108.0f, shinyMaterial, resetTexture);
     restartBtn->setPos(glm::vec3(100.0f, h - 60.0f, 0.0f));
     restartBtn->setScale(glm::vec3(0.5f, 0.5f, 1.0f));
 }
@@ -114,24 +114,21 @@ void Application::Run()
         float mx = input.getMouseXUI();
         float my = input.getMouseYUI();
 
-        if (input.mousePressed(GLFW_MOUSE_BUTTON_LEFT)) {
-            if (restartBtn->buttonPressed(mx, my)) {
-                trail->clear();
-                ball.restart();
-                trajectoryTimer = 0.0f;
-            }
+        bool mouseDown = input.mouseDown(GLFW_MOUSE_BUTTON_LEFT);
+        bool mousePressed = input.mousePressed(GLFW_MOUSE_BUTTON_LEFT);
+
+        restartBtn->updateButtonState(mx, my, mouseDown);
+
+        if (restartBtn->getButtonHovered() && mousePressed) {
+            trail->clear();
+            ball.restart();
+            trajectoryTimer = 0.0f;
         }
 
+        // --- Simulation ---
         ball.update(deltaTime * 1.0f, Simulation::gravity);
         ball.bounceOnFloor(Simulation::floorTopY,Simulation::restitution);
         ball.bounceOnWall(Simulation::wallX, Simulation::restitution);
-
-        trajectoryTimer += deltaTime;
-        if (trajectoryTimer > 0.01f)
-        {
-            trail->addPoint(glm::vec2(ball.GetPos().x, ball.GetPos().y - Simulation::floorOffset));
-            trajectoryTimer = 0.0f;
-        }
 
         glfwPollEvents();
         input.update();
@@ -151,13 +148,22 @@ void Application::Run()
         glm::vec3 lowerLight = camera.getCameraPosition();
         lowerLight.y -= 0.3f;
 
-        // camera
+        // --- Camera ---
+
         glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(worldProjection));
 
         glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(worldView));
         glUniform3f(uniformEyePosition, 0.0f, 0.0f, 0.0f);
 
         // --- Trajectory ---
+
+        trajectoryTimer += deltaTime;
+        if (trajectoryTimer > 0.01f)
+        {
+            trail->addPoint(glm::vec2(ball.GetPos().x, ball.GetPos().y - Simulation::floorOffset));
+            trajectoryTimer = 0.0f;
+        }
+
         lineShader->useShader();
 
         lineShader->setMat4("projection", worldProjection);

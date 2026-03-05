@@ -4,6 +4,7 @@ Button::Button(float width, float height, Material& mat, Texture& tex)
 {
 	pos = glm::vec3(0.0f, 0.0f, 0.0f);
 	scale = glm::vec3(1.0f, 1.0f, 1.0f);
+	normalScale = scale;
 	rotation = glm::vec3(0.0f, 0.0f, 1.0f);
 	rotationAngle = 0;
 
@@ -15,7 +16,17 @@ Button::Button(float width, float height, Material& mat, Texture& tex)
 	this->mat = mat;
 	this->tex = tex;
 
+	hoverColorMultiplier = 0.7f;
+	pressedColorMultiplier = 0.5f;
+
 	color = glm::vec4(1, 1, 1, 1);
+	
+	normalColor = color;
+	hoverColor = glm::vec4(color.r * hoverColorMultiplier, color.g * hoverColorMultiplier, color.b * hoverColorMultiplier, color.a);
+	pressedColor = glm::vec4(color.r * pressedColorMultiplier, color.g * pressedColorMultiplier, color.b * pressedColorMultiplier, color.a);
+
+	hovered = false;
+	pressed = false;
 }
 
 void Button::setPos(glm::vec3 pos)
@@ -26,6 +37,7 @@ void Button::setPos(glm::vec3 pos)
 void Button::setScale(glm::vec3 scale)
 {
 	this->scale = scale;
+	normalScale = scale;
 }
 
 void Button::setRotation(glm::vec3 rotation, float rotationAngle)
@@ -37,21 +49,28 @@ void Button::setRotation(glm::vec3 rotation, float rotationAngle)
 void Button::setColor(glm::vec4 color)
 {
 	this->color = color;
+	normalColor = color;
+	hoverColor = glm::vec4(color.r * hoverColorMultiplier, color.g * hoverColorMultiplier, color.b * hoverColorMultiplier, color.a);
+	pressedColor = glm::vec4(color.r * pressedColorMultiplier, color.g * pressedColorMultiplier, color.b * pressedColorMultiplier, color.a);
 }
 
-bool Button::buttonPressed(float mx, float my) const
+void Button::updateButtonState(float mx, float my, bool mouseDown)
 {
-	float left = pos.x - width / 2;
-	float right = pos.x + width / 2;
-	float bottom = pos.y - height / 2;
-	float up = pos.y + height / 2;
+	float left = pos.x - (width * scale.x) / 2;
+	float right = pos.x + (width * scale.x ) / 2;
+	float bottom = pos.y - (height * scale.y) / 2;
+	float up = pos.y + (height * scale.y) / 2;
 
-	return mx >= left && mx <= right && my >= bottom && my <= up;
+	hovered = mx >= left && mx <= right && my >= bottom && my <= up;
+	pressed = hovered && mouseDown;
+
+	if (pressed) pressedAnimation();
+	else if (hovered) { color = hoverColor; scale = normalScale; }
+	else idleAnimation();
 }
 
 void Button::render(GLuint uniformModel, GLuint colorLoc)
 {
-
 	glm::mat4 model(1.0f);
 
 	model = glm::mat4(1.0f);
@@ -70,6 +89,18 @@ void Button::render(GLuint uniformModel, GLuint colorLoc)
 	tex.useTexture();
 
 	buttonMesh->renderMesh();
+}
+
+void Button::pressedAnimation()
+{
+	this->color = pressedColor;
+	scale = normalScale * 0.95f;
+}
+
+void Button::idleAnimation()
+{
+	this->color = normalColor;
+	scale = normalScale;
 }
 
 Button::~Button()

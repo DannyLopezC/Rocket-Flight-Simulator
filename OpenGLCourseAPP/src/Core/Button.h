@@ -19,7 +19,9 @@ public:
 	void render(GLuint uniformModel, GLuint colorLoc);
 	void setColor(glm::vec4 color);
 
-	bool buttonPressed(float mx, float my) const;
+	bool getButtonHovered() const { return hovered; }
+
+	void updateButtonState(float mx, float my, bool clicked);
 
 	glm::vec3 getPos() const { return pos; }
 	glm::vec3 getScale() const { return scale; }
@@ -29,6 +31,7 @@ public:
 private:
 	glm::vec3 pos;
 	glm::vec3 scale;
+	glm::vec3 normalScale;
 	glm::vec3 rotation;
 	float rotationAngle;
 
@@ -40,6 +43,17 @@ private:
 
 	glm::vec4 color;
 
+	glm::vec4 normalColor;
+	glm::vec4 hoverColor;
+	float hoverColorMultiplier;
+	glm::vec4 pressedColor;
+	float pressedColorMultiplier;
+
 	Mesh* buttonMesh;
+
+	bool pressed, hovered;
+
+	void pressedAnimation();
+	void idleAnimation();
 };
 
