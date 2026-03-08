@@ -46,6 +46,7 @@
     <ClCompile Include="src\Graphics\Trail.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Simulation\Ball.cpp" />
+    <ClCompile Include="src\Simulation\Rocket2D.cpp" />
     <ClCompile Include="src\Simulation\Simulation.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -68,6 +69,7 @@
     <ClInclude Include="src\Graphics\Texture.h" />
     <ClInclude Include="src\Graphics\Trail.h" />
     <ClInclude Include="src\Simulation\Ball.h" />
+    <ClInclude Include="src\Simulation\Rocket2D.h" />
     <ClInclude Include="src\Simulation\Simulation.h" />
     <ClInclude Include="src\Simulation\SimulationConfig.h" />
   </ItemGroup>

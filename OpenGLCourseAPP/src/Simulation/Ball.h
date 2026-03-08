@@ -8,7 +8,7 @@ public:
 		glm::vec2 startVel = { 0.0f, 0.0f },
 		float r = 1.0f);
 	
-	void restart();
+	void restart(glm::vec2 startPos, glm::vec2 startVel);
 
 	glm::vec2 getPos() const { return pos; }
 	glm::vec2 getVel() const { return vel; }
@@ -24,9 +24,6 @@ public:
 
 	~Ball();
 private:
-	glm::vec2 startPos;
-	glm::vec2 startVel;
-
 	glm::vec2 pos;
 	glm::vec2 vel;
 	float radius;

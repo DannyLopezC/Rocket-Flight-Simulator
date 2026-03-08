@@ -38,7 +38,7 @@ void Simulation::bounceOnWall()
 }
 
 void Simulation::restart() {
-	ball.restart();
+	ball.restart(config.throwerPos, config.v0);
 }
 
 Simulation::~Simulation()
