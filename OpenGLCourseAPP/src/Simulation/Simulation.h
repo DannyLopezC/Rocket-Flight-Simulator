@@ -1,19 +1,30 @@
 #pragma once
 #include "glm/glm.hpp"
+#include "Simulation/Ball.h"
+#include "Simulation/SimulationConfig.h"
 
 class Simulation
 {
 public:
 	Simulation();
 
-	static constexpr float gravity = 10;
-	static constexpr glm::vec2 throwerPos = { 0.0f, 2.0f };
-	static constexpr glm::vec2 v0 = { 10.0f, 10.0f };
-	static constexpr float floorTopY = 0.0f;
-	static constexpr float wallX = 4.0f;
-	static constexpr float restitution = 1.0;
-	static constexpr float floorOffset = 9.0;
+	void update(float dt);
+	void restart();
+
+	float getBallRadius() const { return ball.getRadius(); }
+	glm::vec2 getBallPos() const { return ball.getPos(); }
+	glm::vec2 getBallVel() const { return ball.getVel(); }
+
+	float getWallX() const { return config.wallX; }
+	float getFloorOffset() const { return config.floorOffset; }
 
 	~Simulation();
+private:
+
+	void bounceOnFloor();
+	void bounceOnWall();
+
+	Ball ball;
+	SimulationConfig config;
 };
 

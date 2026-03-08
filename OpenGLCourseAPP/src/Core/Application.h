@@ -50,7 +50,7 @@ private:
     GLfloat deltaTime;
     GLfloat lastTime;
 
-    Ball ball;
+    Simulation simulation;
 
     Trail* trail;
     float trajectoryTimer = 0.0f;

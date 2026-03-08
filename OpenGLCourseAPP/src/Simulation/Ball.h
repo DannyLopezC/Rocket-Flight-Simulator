@@ -7,19 +7,20 @@ public:
 	Ball(glm::vec2 startPos = { 0.0f, 5.0f },
 		glm::vec2 startVel = { 0.0f, 0.0f },
 		float r = 1.0f);
-
-	void update(float dt, float gravity);
-	void bounceOnFloor(float floorY, float restitution);
-	void bounceOnWall(float wallX, float restitution);
+	
 	void restart();
 
-	glm::vec2 GetPos() const { return pos; }
-	glm::vec2 GetVel() const { return vel; }
-	float GetRadius() const { return radius; }
-	bool getHasBounced() const { return hasBounced; }
+	glm::vec2 getPos() const { return pos; }
+	glm::vec2 getVel() const { return vel; }
+	float getRadius() const { return radius; }
 
-	void SetPos(glm::vec2 p) { pos = p; }
-	void SetVel(glm::vec2 v) { vel = v; }
+	void setXPos(float xPos) { pos.x = xPos; }
+	void setYPos(float yPos) { pos.y = yPos; }
+	void setPos(glm::vec2 p) { pos = p; }
+
+	void setXVel(float xVel) { vel.x = xVel; }
+	void setYVel(float yVel) { vel.y = yVel; }
+	void setVel(glm::vec2 v) { vel = v; }
 
 	~Ball();
 private:
@@ -29,7 +30,5 @@ private:
 	glm::vec2 pos;
 	glm::vec2 vel;
 	float radius;
-
-	bool hasBounced = false;
 };
 

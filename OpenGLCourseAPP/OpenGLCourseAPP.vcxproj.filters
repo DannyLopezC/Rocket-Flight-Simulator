@@ -36,6 +36,18 @@
     <None Include="assets\shaders\shader.vert">
       <Filter>assets\shaders</Filter>
     </None>
+    <None Include="assets\shaders\btn.frag">
+      <Filter>assets\shaders</Filter>
+    </None>
+    <None Include="assets\shaders\btn.vert">
+      <Filter>assets\shaders</Filter>
+    </None>
+    <None Include="assets\shaders\line.frag">
+      <Filter>assets\shaders</Filter>
+    </None>
+    <None Include="assets\shaders\line.vert">
+      <Filter>assets\shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Window.cpp">
@@ -159,6 +171,9 @@
     </ClInclude>
     <ClInclude Include="src\Core\Input.h">
       <Filter>src\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Simulation\SimulationConfig.h">
+      <Filter>src\Simulation</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

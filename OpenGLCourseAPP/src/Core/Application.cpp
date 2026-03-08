@@ -53,10 +53,10 @@ void Application::Init()
     resetTexture = Texture("assets/textures/reset.png");
     resetTexture.loadTextureA();
 
-    ball = Ball(Simulation::throwerPos, Simulation::v0, 0.2f);
+    simulation = Simulation();
 
     floor = PrimitiveFactory::createQuad(40.0f, 2.0f);
-    circle = PrimitiveFactory::createCircle(ball.GetRadius(), 50);
+    circle = PrimitiveFactory::createCircle(simulation.getBallRadius(), 50);
     wall = PrimitiveFactory::createQuad(0.2f, 40.0f);
 
     shinyMaterial = Material(0.8f, 256);
@@ -121,14 +121,12 @@ void Application::Run()
 
         if (restartBtn->getButtonHovered() && mousePressed) {
             trail->clear();
-            ball.restart();
+            simulation.restart();
             trajectoryTimer = 0.0f;
         }
 
         // --- Simulation ---
-        ball.update(deltaTime * 1.0f, Simulation::gravity);
-        ball.bounceOnFloor(Simulation::floorTopY,Simulation::restitution);
-        ball.bounceOnWall(Simulation::wallX, Simulation::restitution);
+        simulation.update(deltaTime * 1.0f);
 
         glfwPollEvents();
         input.update();
@@ -160,7 +158,7 @@ void Application::Run()
         trajectoryTimer += deltaTime;
         if (trajectoryTimer > 0.01f)
         {
-            trail->addPoint(glm::vec2(ball.GetPos().x, ball.GetPos().y - Simulation::floorOffset));
+            trail->addPoint(glm::vec2(simulation.getBallPos().x, simulation.getBallPos().y - simulation.getFloorOffset()));
             trajectoryTimer = 0.0f;
         }
 
@@ -179,10 +177,10 @@ void Application::Run()
         // --- Ball ---
         glm::mat4 model(1.0f);
         
-        glm::vec2 p = ball.GetPos();
+        glm::vec2 p = simulation.getBallPos();
 
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(p.x,p.y - Simulation::floorOffset, 0.0f));
+        model = glm::translate(model, glm::vec3(p.x,p.y - simulation.getFloorOffset(), 0.0f));
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         shinyMaterial.useMaterial(uniformSpecularIntensity, uniformShininess);
         plainTexture.useTexture();
@@ -190,7 +188,7 @@ void Application::Run()
 
         // --- Floor ---
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, -1.0f - Simulation::floorOffset, 0.0f));
+        model = glm::translate(model, glm::vec3(0.0f, -1.0f - simulation.getFloorOffset(), 0.0f));
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         dullMaterial.useMaterial(uniformSpecularIntensity, uniformShininess);
         plainTexture.useTexture();
@@ -198,7 +196,7 @@ void Application::Run()
 
         // --- Wall ---
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(Simulation::wallX, 20.0f - Simulation::floorOffset, 0.0f));
+        model = glm::translate(model, glm::vec3(simulation.getWallX(), 20.0f - simulation.getFloorOffset(), 0.0f));
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         dullMaterial.useMaterial(uniformSpecularIntensity, uniformShininess);
         plainTexture.useTexture();
