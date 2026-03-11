@@ -7,7 +7,8 @@ public:
 	static Mesh* createCircle(float radius, int segments);
 	static Mesh* createQuad(float width, float height);
 	static Mesh* createUIQuad(float width, float height);
-	static Mesh* createLine(float lenght);
+	static Mesh* createLine();
+	static Mesh* createArrowHead();
 
 private:
 

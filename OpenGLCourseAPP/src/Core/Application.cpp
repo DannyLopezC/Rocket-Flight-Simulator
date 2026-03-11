@@ -8,9 +8,11 @@ Application::Application()
 {
     floor = nullptr;
     rocket = nullptr;
-    wall = nullptr;
     trail = nullptr;
     restartBtn = nullptr;
+    velArrow = nullptr;
+    accArrow = nullptr;
+    maxHeightLine = nullptr;
 }
 
 Application::~Application()
@@ -26,11 +28,17 @@ Application::~Application()
     delete rocket;
     rocket = nullptr;
 
-    delete wall;
-    wall = nullptr;
-
     delete restartBtn;
     restartBtn = nullptr;
+
+    delete velArrow;
+    velArrow = nullptr;
+
+    delete accArrow;
+    accArrow = nullptr;
+
+    delete maxHeightLine;
+    maxHeightLine = nullptr;
 }
 
 void Application::Init()
@@ -57,13 +65,14 @@ void Application::Init()
 
     floor = PrimitiveFactory::createQuad(40.0f, 2.0f);
     rocket = PrimitiveFactory::createQuad(simulation.getRocketWidth(), simulation.getRocketHeight());
-    wall = PrimitiveFactory::createQuad(0.2f, 40.0f);
+    maxHeightLine = PrimitiveFactory::createLine();
 
     shinyMaterial = Material(0.8f, 256);
     dullMaterial = Material(0.3f, 4);
 
     trail = new Trail(2000);
-
+    velArrow = new Arrow(1.0f, glm::vec3(0, 0, 0), glm::vec3(0, 0, 1), 45);
+    accArrow = new Arrow(1.0f, glm::vec3(0, 0, 0), glm::vec3(0, 0, 1), 45);
 
     float w = (float)mainWindow.getBufferWidth();
     float h = (float)mainWindow.getBufferHeight();
@@ -101,14 +110,14 @@ void Application::Run()
     Shader* lineShader = shaderList[1];
     Shader* uiShader = shaderList[2];
 
-    lastTime = glfwGetTime();
-    deltaTime = 0.0f;
-
     while (!mainWindow.getShouldClose())
     {
         GLfloat now = glfwGetTime();
         deltaTime = now - lastTime;
         lastTime = now;
+
+        deltaTime = glm::clamp(deltaTime, 0.0f, 0.05f);
+        accumulator += deltaTime;
 
         // --- Mouse Input ---
         float mx = input.getMouseXUI();
@@ -126,7 +135,12 @@ void Application::Run()
         }
 
         // --- Simulation ---
-        simulation.update(deltaTime * 1.0f);
+        while (accumulator >= fixedDt)
+        {
+            simulation.update(fixedDt);
+            accumulator -= fixedDt;
+        }
+
 
         glfwPollEvents();
         input.update();
@@ -168,40 +182,88 @@ void Application::Run()
         lineShader->setMat4("view", worldView);
 
         GLint colorLoc = glGetUniformLocation(lineShader->getShaderId(), "lineColor");
+        GLuint lineModel = lineShader->getModelLocation();
         glUniform4f(colorLoc, 0.4f, 0.5f, 1.0f, 1.0f);
 
+        glm::mat4 identity(1.0f);
+        glUniformMatrix4fv(lineModel, 1, GL_FALSE, glm::value_ptr(identity));
         trail->render();
         // change back to the normal shader
         shader->useShader();
 
         // --- Rocket ---
-        glm::mat4 model(1.0f);
-        
-        glm::vec2 p = simulation.getRocketPos();
 
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(p.x,p.y - simulation.getFloorOffset(), 0.0f));
-        model = glm::rotate(model, glm::radians(simulation.getRocketAngle() + 90), glm::vec3(0.0f, 0.0f, 1.0f));
-        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-        shinyMaterial.useMaterial(uniformSpecularIntensity, uniformShininess);
-        plainTexture.useTexture();
-        rocket->renderMesh();
+        glm::vec2 p = simulation.getRocketPos();
+        glm::vec2 vel = simulation.getRocketVel();
+        glm::vec2 acc = simulation.getRocketAcc();
+
+        glm::vec3 t = { p.x, p.y - simulation.getFloorOffset(), 0.0f };
+        glm::vec3 r = { 0.0f, 0.0f, 1.0f };
+        float rA;
+
+        if (glm::length(vel) > 0.01f)
+        {
+            rA = glm::degrees(atan2(vel.y, vel.x)) + 90.0f;
+        }
+        else
+        {
+            rA = simulation.getRocketAngle() + 90.0f;
+        }
+        
+        renderMesh(rocket, t, r, rA, uniformModel, shinyMaterial, plainTexture);
+
+        // --- Arrows ---
+        lineShader->useShader();
+        lineShader->setMat4("projection", worldProjection);
+        lineShader->setMat4("view", worldView);
+
+        colorLoc = glGetUniformLocation(lineShader->getShaderId(), "lineColor");
+         // --- Vel Arrow ---
+        
+        rA = glm::degrees(atan2(vel.y, vel.x));
+        velArrow->setArrowPos(t);
+        velArrow->setArrowAngle(rA);
+        velArrow->setArrowLength(glm::clamp(glm::length(vel) * 0.4f, 0.0f, 5.0f));
+        glUniform4f(colorLoc, velocityColor.r, velocityColor.g, velocityColor.b, velocityColor.a);
+        velArrow->render(lineModel);
+         // -- Acc Arrow ---
+
+        float accMag = glm::length(acc);
+
+        if (accMag > 0.0001f)
+        {
+            float rA = glm::degrees(atan2(acc.y, acc.x));
+
+            accArrow->setArrowPos(t);
+            accArrow->setArrowAngle(rA);
+            accArrow->setArrowLength(accMag * 0.2f);
+
+            glUniform4f(colorLoc, accelColor.r, accelColor.g, accelColor.b, accelColor.a);
+            accArrow->render(lineModel);
+        }
+
+        // --- Height Line ---
+
+        t = { simulation.getWallX(), 20.0f - simulation.getFloorOffset(), 0.0f };
+        r = { 1.0f, 1.0f, 1.0f };
+        rA = 0;
+        //renderMesh(wall, t, r, rA, uniformModel, dullMaterial, plainTexture);
 
         // --- Floor ---
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, -1.0f - simulation.getFloorOffset(), 0.0f));
-        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-        dullMaterial.useMaterial(uniformSpecularIntensity, uniformShininess);
-        plainTexture.useTexture();
-        floor->renderMesh();
+        shader->useShader();
+
+        t = { 0.0f, -1.0f - simulation.getFloorOffset(), 0.0f };
+        r = { 1.0f, 1.0f, 1.0f };
+        rA = 0;
+        renderMesh(floor, t, r, rA, uniformModel, dullMaterial, plainTexture);
 
         // --- Wall ---
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(simulation.getWallX(), 20.0f - simulation.getFloorOffset(), 0.0f));
-        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-        dullMaterial.useMaterial(uniformSpecularIntensity, uniformShininess);
-        plainTexture.useTexture();
-        //wall->renderMesh();
+
+        t = { -18.0f , simulation.getMaxHeight() - simulation.getFloorOffset(), 0.0f};
+        r = { 1.0f, 1.0f, 1.0f };
+        rA = 0;
+        glm::vec3 scale = { 36.0f, 1.0f, 1.0f };
+        renderLine(maxHeightLine, t, r, rA, uniformModel, scale);
 
         // --- UI ---
         glDisable(GL_DEPTH_TEST);
@@ -239,4 +301,31 @@ void Application::createShaders()
     Shader* shader3 = new Shader();
     shader3->createFromFiles("assets/shaders/btn.vert", "assets/shaders/btn.frag");
     shaderList.push_back(shader3);
+}
+
+void Application::renderMesh(Mesh* mesh, glm::vec3 translate, glm::vec3 rotate, float rotationAngle,
+    GLuint uniformModel, Material mat, Texture tex, glm::vec3 scale)
+{
+    glm::mat4 model(1.0f);
+
+    model = glm::mat4(1.0f);
+    model = glm::translate(model, translate);
+    model = glm::rotate(model, glm::radians(rotationAngle), rotate);
+    model = glm::scale(model, scale);
+    glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+    mat.useMaterial(0, 0);
+    tex.useTexture();
+    mesh->renderMesh();
+}
+
+void Application::renderLine(Mesh* mesh, glm::vec3 translate, glm::vec3 rotate, float rotationAngle, GLuint uniformModel, glm::vec3 scale)
+{
+    glm::mat4 model(1.0f);
+
+    model = glm::mat4(1.0f);
+    model = glm::translate(model, translate);
+    model = glm::rotate(model, glm::radians(rotationAngle), rotate);
+    model = glm::scale(model, scale);
+    glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+    mesh->renderLines();
 }

@@ -32,6 +32,7 @@
     <ClCompile Include="src\Core\Input.cpp" />
     <ClCompile Include="src\Core\stb_image.cpp" />
     <ClCompile Include="src\Core\Window.cpp" />
+    <ClCompile Include="src\Graphics\Arrow.cpp" />
     <ClCompile Include="src\Graphics\Camera.cpp" />
     <ClCompile Include="src\Graphics\Lightning\DirectionalLight.cpp" />
     <ClCompile Include="src\Graphics\Lightning\Light.cpp" />
@@ -56,6 +57,7 @@
     <ClInclude Include="src\Core\Input.h" />
     <ClInclude Include="src\Core\stb_image.h" />
     <ClInclude Include="src\Core\Window.h" />
+    <ClInclude Include="src\Graphics\Arrow.h" />
     <ClInclude Include="src\Graphics\Camera.h" />
     <ClInclude Include="src\Graphics\Lightning\DirectionalLight.h" />
     <ClInclude Include="src\Graphics\Lightning\Light.h" />

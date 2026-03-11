@@ -97,18 +97,34 @@ Mesh* PrimitiveFactory::createUIQuad(float width, float height)
     return quad;
 }
 
-Mesh* PrimitiveFactory::createLine(float lenght)
+Mesh* PrimitiveFactory::createLine()
 {
-    float l = lenght * 0.5f;
-
     unsigned int lineIndices[] = { 0, 1 };
     GLfloat lineVertices[] = {
-        -l, 0.0f, 0.0f,   0.0f, 0.0f,  0.0f, 0.0f, 1.0f,
-         l, 0.0f, 0.0f,   1.0f, 0.0f,  0.0f, 0.0f, 1.0f,
+         0.0f, 0.0f, 0.0f,   0.0f, 0.0f,  0.0f, 0.0f, 1.0f,
+         1.0f, 0.0f, 0.0f,   1.0f, 0.0f,  0.0f, 0.0f, 1.0f,
     };
 
     Mesh* line = new Mesh();
     line->createMesh(lineVertices, lineIndices, 16, 2);
 
     return line;
+}
+
+Mesh* PrimitiveFactory::createArrowHead()
+{
+    const float headLength = 0.25f;
+    const float headWidth = 0.12f;
+
+    unsigned int headIndices[] = { 0, 1, 0, 2 };
+    GLfloat headVertices[] = {
+          0.0f, 0.0f,             0.0f, 0.0f, 0.0f, 0.0f,  0.0f, 1.0f,
+         -headLength, headWidth,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f, 1.0f,
+         -headLength, -headWidth, 0.0f, 1.0f, 0.0f,  0.0f, 0.0f, 1.0f,
+    };
+
+    Mesh* head = new Mesh();
+    head->createMesh(headVertices, headIndices, 24, 4);
+
+    return head;
 }
