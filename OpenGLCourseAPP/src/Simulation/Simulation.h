@@ -12,25 +12,42 @@ public:
 	void update(float dt);
 	void restart();
 
+	// rocket values
 	float getRocketWidth() const { return rocket.getWidth(); }
 	float getRocketHeight() const { return rocket.getHeight(); }
 	float getRocketAngle() const { return rocket.getAngle(); }
 	float getRocketSpeed() const { return glm::length(rocket.getVel()); }
-	float getMaxHeight() const { return maxHeight; }
-
 	glm::vec2 getRocketPos() const { return rocket.getPos(); }
 	glm::vec2 getRocketVel() const { return rocket.getVel(); }
 	glm::vec2 getRocketAcc() const { return rocket.getAcc(); }
 
-	float getWallX() const { return config.wallX; }
-	float getFloorOffset() const { return config.floorOffset; }
+	// parameters to show
+	float getMaxHeight() const { return maxHeight; }
+	float getRange() const { return range; }
+	float getFlightTime() const { return flightTime; }
 
-	float setStartAngle(float newAngle) { config.angle = newAngle; }
-	float setStartThrust(float newThrust) { config.thrust = newThrust; }
-	float setStartBurnTime(float newBurnTime) { config.burnTime = newBurnTime; }
-	float setStartDragCoefficient(float newDragCoefficient) { config.dragCoefficient = newDragCoefficient; }
-	float setStartMass(float newMass) { config.mass = newMass; }
-	float setStartRestitution(float newRestitution) { config.restitution = newRestitution; }
+	// starting values
+	void setGravity(float v) { config.gravity = v; }
+	void setAngle(float v) { config.angle = v; rocket.setAngle(v); }
+	void setMass(float v) { config.mass = v; rocket.setMass(v); }
+	void setThrust(float v) { config.thrust = v; rocket.setThrust(v); }
+	void setBurnTime(float v) { config.burnTime = v; rocket.setBurnTime(v); }
+	void setFloorTopY(float v) { config.floorTopY = v; }
+	void setFloorOffset(float v) { config.floorOffset = v; }
+	void setWallX(float v) { config.wallX = v; }
+	void setRestitution(float v) { config.restitution = v; }
+	void setDragCoefficient(float v) { config.dragCoefficient = v; }
+
+	float getGravity() const { return config.gravity; }
+	float getAngle() const { return config.angle; }
+	float getMass() const { return config.mass; }
+	float getThrust() const { return config.thrust; }
+	float getBurnTime() const { return config.burnTime; }
+	float getFloorTopY() const { return config.floorTopY; }
+	float getFloorOffset() const { return config.floorOffset; }
+	float getWallX() const { return config.wallX; }
+	float getRestitution() const { return config.restitution; }
+	float getDragCoefficient() const { return config.dragCoefficient; }
 
 	~Simulation();
 private:
@@ -52,5 +69,6 @@ private:
 	float maxHeight;
 	float range;
 	float flightTime;
+	float burnTime;
 };
 

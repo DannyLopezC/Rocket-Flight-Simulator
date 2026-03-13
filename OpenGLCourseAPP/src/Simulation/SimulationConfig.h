@@ -14,8 +14,8 @@ struct SimulationConfig
 	float thrust = 15.0f;    // motor force
 	float burnTime = 1.8f;   // push seconds
 	
-	float floorTopY = 0.0f;
-	float floorOffset = 9.0;
+	float floorTopY = 0.0f; // actual physic floor
+	float floorOffset = 9.0; // this is only visual
 	float wallX = 4.0f;
 
 	float restitution = 0.5f;

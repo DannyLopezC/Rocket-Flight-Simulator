@@ -14,13 +14,21 @@ void Input::init(GLFWwindow* window)
 	glfwGetCursorPos(window, &x, &y);
 	mouseX = (float)x;
 	mouseY = (float)y;
+
+	glfwSetWindowUserPointer(window, this);
+	glfwSetCharCallback(window, Input::charCallback);
 }
 
-void Input::update()
+void Input::beginFrame()
 {
 	std::copy(std::begin(mouseDownNow), std::end(mouseDownNow), std::begin(mouseDownPrev));
 	std::copy(std::begin(keyDownNow), std::end(keyDownNow), std::begin(keyDownPrev));
 
+	charBuffer.clear();
+}
+
+void Input::update()
+{
 	double x, y;
 	glfwGetCursorPos(window, &x, &y);
 	mouseX = (float)x;
@@ -79,4 +87,12 @@ void Input::setWindowSize(int w, int h)
 {
 	windowW = (float)w;
 	windowH = (float)h;
+}
+
+void Input::charCallback(GLFWwindow* window, unsigned int codepoint)
+{
+	Input* input = static_cast<Input*>(glfwGetWindowUserPointer(window));
+	if (!input) return;
+
+	input->charBuffer.push_back(codepoint);
 }

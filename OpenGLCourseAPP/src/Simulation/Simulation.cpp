@@ -12,6 +12,7 @@ Simulation::Simulation()
 	maxHeight = 0;
 	range = 0; 
 	flightTime = 0;
+	burnTime = rocket.getBurnTime();
 }
 
 void Simulation::update(float dt)
@@ -19,6 +20,7 @@ void Simulation::update(float dt)
 	if (simulationEnded) return;
 	flightTime += dt;
 	if (rocket.getPos().y > maxHeight) maxHeight = rocket.getPos().y;
+	if (!hasBounced) range = rocket.getPos().x - config.startPos.x;
 	glm::vec2 gravityVec = rocket.getMass() * glm::vec2(0, (-config.gravity));
 	glm::vec2 thrustVec = calcThrustVec();
 	glm::vec2 drag = -config.dragCoefficient * rocket.getVel(); // air resistance
@@ -26,7 +28,7 @@ void Simulation::update(float dt)
 
 	applyMotion(totalForce/ rocket.getMass(), dt);
 
-	float burnTime = std::max(0.0f, rocket.getBurnTime() - dt);
+	burnTime = std::max(0.0f, rocket.getBurnTime() - dt);
 	rocket.setBurnTime(burnTime);
 
 	bounceOnFloor();
@@ -37,19 +39,13 @@ void Simulation::bounceOnFloor()
 {
 	if (rocket.getPos().y - (rocket.getHeight() / 2) <= config.floorTopY)
 	{
-		if (!hasBounced) range = rocket.getPos().x - config.startPos.x;
 		hasBounced = true;
 		rocket.setYPos(config.floorTopY + rocket.getHeight() / 2);
 		rocket.setYVel(-rocket.getVel().y * config.restitution);
 
 		if (std::abs(rocket.getVel().y) < 0.05f) {
 			simulationEnded = true;
-			std::cout << "Rocket Flight Simulator" << std::endl;
-			std::cout << "Max Height: " << maxHeight << std::endl;
-			std::cout << "Range: " << range << std::endl;
-			std::cout << "Flight Time: " << flightTime << std::endl;
-
-			//rocket.setVel(glm::vec2(0, 0));
+			rocket.setVel(glm::vec2(0, 0));
 			rocket.setAcc(glm::vec2(0, 0));
 		}
 	}

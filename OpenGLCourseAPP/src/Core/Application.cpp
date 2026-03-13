@@ -1,4 +1,4 @@
-#include "Core/Application.h"
+﻿#include "Core/Application.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <GLFW/glfw3.h>
@@ -13,6 +13,7 @@ Application::Application()
     velArrow = nullptr;
     accArrow = nullptr;
     maxHeightLine = nullptr;
+    textRenderer = nullptr;
 }
 
 Application::~Application()
@@ -39,17 +40,30 @@ Application::~Application()
 
     delete maxHeightLine;
     maxHeightLine = nullptr;
+
+    delete textRenderer;
+    textRenderer = nullptr;
+
+    for (auto& field : configFields)
+    {
+        delete field.inputField;
+    }
+    configFields.clear();
 }
 
 void Application::Init()
 {
-    mainWindow = Window(1366, 768);
+    mainWindow = Window(1700, 950);
     mainWindow.initialise();
 
     input.init(mainWindow.getWindow());
     input.setWindowSize((int)mainWindow.getBufferWidth(), (int)mainWindow.getBufferHeight());
 
     createShaders();
+
+    textRenderer = new TextRenderer();
+    textRenderer->init((unsigned int)mainWindow.getBufferWidth(), (unsigned int)mainWindow.getBufferHeight(), shaderList[3]);
+    textRenderer->loadFont(fontPath, 24);
 
     camera = Camera(glm::vec3(0.0f, 5.0f, 20.0f),
         glm::vec3(0.0f, 1.0f, 0.0f),
@@ -79,8 +93,50 @@ void Application::Init()
     float btnW = 120.0f, btnH = 50.0f, margin = 20.0f;
 
     restartBtn = new Button(273.0f, 108.0f, shinyMaterial, resetTexture);
-    restartBtn->setPos(glm::vec3(100.0f, h - 60.0f, 0.0f));
+    restartBtn->setPos(glm::vec3(w - 183.0f, h - 200.0f, 0.0f));
     restartBtn->setScale(glm::vec3(0.5f, 0.5f, 1.0f));
+
+    auto addField = [&](const std::string& label, ConfigKey key, float x, float y)
+        {
+            ConfigField field;
+            field.label = label;
+            field.key = key;
+
+            field.inputField = new InputField(60.0f, 40.0f, plainTexture);
+            field.inputField->initTextRenderer(w, h, shaderList[3], fontPath, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), 4);
+
+            field.inputField->setPos(glm::vec3(x, y, 0.0f));
+            field.inputField->setText(getFieldValue(field.key));
+
+            configFields.push_back(field);
+        };
+
+    float startX = 170.0f;
+    float startY = h - 50.0f;
+
+    float columnSpacing = 220.0f;
+    float rowSpacing = 60.0f;
+
+    std::vector<std::pair<std::string, ConfigKey>> fields =
+    {
+        {"Gravity", ConfigKey::Gravity},
+        {"Angle", ConfigKey::Angle},
+        {"Mass", ConfigKey::Mass},
+        {"Thrust", ConfigKey::Thrust},
+        {"Burn Time", ConfigKey::BurnTime},
+        {"Restitution", ConfigKey::Restitution}
+    };
+
+    for (int i = 0; i < fields.size(); i++)
+    {
+        int col = i % 3;
+        int row = i / 3;
+
+        float x = startX + col * columnSpacing;
+        float y = startY - row * rowSpacing;
+
+        addField(fields[i].first, fields[i].second, x, y);
+    }
 }
 
 void Application::Run()
@@ -119,6 +175,10 @@ void Application::Run()
         deltaTime = glm::clamp(deltaTime, 0.0f, 0.05f);
         accumulator += deltaTime;
 
+        input.beginFrame();
+        glfwPollEvents();
+        input.update();
+
         // --- Mouse Input ---
         float mx = input.getMouseXUI();
         float my = input.getMouseYUI();
@@ -132,6 +192,45 @@ void Application::Run()
             trail->clear();
             simulation.restart();
             trajectoryTimer = 0.0f;
+            
+            for (auto& field : configFields)
+            {
+                applyFieldValue(field);
+            }
+        }
+
+        for (auto& field : configFields)
+        {
+            field.inputField->updateInputFieldState(mx, my, mousePressed);
+        }
+
+        // --- Key Input ---
+        InputField* activeField = nullptr;
+
+        for (auto& field : configFields)
+        {
+            if (field.inputField->getInputFieldFocused())
+            {
+                activeField = field.inputField;
+                break;
+            }
+        }
+
+        if (activeField)
+        {
+            for (unsigned int c : input.getCharBuffer())
+            {
+                activeField->writeChar((char)c);
+            }
+
+            if (input.keyPressed(GLFW_KEY_BACKSPACE))
+                activeField->writeKey(GLFW_KEY_BACKSPACE);
+
+            if (input.keyPressed(GLFW_KEY_ENTER))
+                activeField->writeKey(GLFW_KEY_ENTER);
+
+            if (input.keyPressed(GLFW_KEY_ESCAPE))
+                activeField->writeKey(GLFW_KEY_ESCAPE);
         }
 
         // --- Simulation ---
@@ -140,10 +239,6 @@ void Application::Run()
             simulation.update(fixedDt);
             accumulator -= fixedDt;
         }
-
-
-        glfwPollEvents();
-        input.update();
 
         glClearColor(0, 0, 0, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -270,19 +365,68 @@ void Application::Run()
         glDepthMask(GL_FALSE);
         glDisable(GL_CULL_FACE);
 
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        GLint btnColorLoc = glGetUniformLocation(uiShader->getShaderId(), "btnColor");
+        GLuint uiModelLoc = glGetUniformLocation(uiShader->getShaderId(), "model");
+
         uiShader->useShader();
 
         uiShader->setMat4("projection", uiProjection);
         uiShader->setMat4("view", uiView);
 
-        GLint btnColorLoc = glGetUniformLocation(uiShader->getShaderId(), "btnColor");
-        GLuint uiModelLoc = glGetUniformLocation(uiShader->getShaderId(), "model");
-
         restartBtn->render(uiModelLoc, btnColorLoc);
+
+        for (auto& field : configFields)
+        {
+            uiShader->useShader();
+            uiShader->setMat4("projection", uiProjection);
+            uiShader->setMat4("view", uiView);
+
+            field.inputField->render(uiModelLoc, btnColorLoc);
+
+            float left = field.inputField->getPos().x
+                - (field.inputField->getWidth() * field.inputField->getScale().x) / 2;
+
+            textRenderer->renderText(
+                field.label,
+                left - 100.0f,
+                field.inputField->getPos().y - 8.0f,
+                0.6f,
+                glm::vec3(1.0f, 1.0f, 1.0f)
+            );
+        }
+
+        std::stringstream ss;
+
+        textRenderer->renderText("Rocket Flight Simulator",
+            w - 250.0f, h - 40.0f,
+            0.8f,
+            glm::vec3(1.0f, 1.0f, 1.0f));
+
+        ss << std::fixed << std::setprecision(2) << simulation.getMaxHeight();
+        textRenderer->renderText("Max Height: " + ss.str(),
+            w - 250.0f, h - 80.0f,
+            0.7f,
+            glm::vec3(1.0f, 1.0f, 1.0f));
+
+        ss = std::stringstream();
+        ss << std::fixed << std::setprecision(2) << simulation.getRange();
+        textRenderer->renderText("Range: " + ss.str(),
+            w - 250.0f, h - 110.0f,
+            0.7f,
+            glm::vec3(1.0f, 1.0f, 1.0f));
+
+        ss = std::stringstream();
+        ss << std::fixed << std::setprecision(2) << simulation.getFlightTime();
+        textRenderer->renderText("Flight Time: " + ss.str(),
+            w - 250.0f, h - 140.0f,
+            0.7f,
+            glm::vec3(1.0f, 1.0f, 1.0f));
 
         glDepthMask(GL_TRUE);
         glEnable(GL_DEPTH_TEST);
-
         glUseProgram(0);
         mainWindow.swapBuffers();
     }
@@ -301,6 +445,10 @@ void Application::createShaders()
     Shader* shader3 = new Shader();
     shader3->createFromFiles("assets/shaders/btn.vert", "assets/shaders/btn.frag");
     shaderList.push_back(shader3);
+
+    Shader* shader4 = new Shader();
+    shader4->createFromFiles("assets/shaders/text.vert", "assets/shaders/text.frag");
+    shaderList.push_back(shader4);
 }
 
 void Application::renderMesh(Mesh* mesh, glm::vec3 translate, glm::vec3 rotate, float rotationAngle,
@@ -328,4 +476,66 @@ void Application::renderLine(Mesh* mesh, glm::vec3 translate, glm::vec3 rotate, 
     model = glm::scale(model, scale);
     glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
     mesh->renderLines();
+}
+
+void Application::applyFieldValue(const ConfigField& field)
+{
+    float value = std::stof(field.inputField->getCurrentText());
+
+    switch (field.key)
+    {
+    case ConfigKey::Gravity:
+        simulation.setGravity(value);
+        break;
+    case ConfigKey::Angle:
+        simulation.setAngle(value);
+        break;
+    case ConfigKey::Mass:
+        simulation.setMass(value);
+        break;
+    case ConfigKey::Thrust:
+        simulation.setThrust(value);
+        break;
+    case ConfigKey::BurnTime:
+        simulation.setBurnTime(value);
+        break;
+    case ConfigKey::Restitution:
+        simulation.setRestitution(value);
+        break;
+    default:
+        break;
+    }
+}
+
+std::string Application::getFieldValue(ConfigKey key)
+{
+    float value;
+
+    switch (key)
+    {
+    case ConfigKey::Gravity:
+        value = simulation.getGravity();
+        break;
+    case ConfigKey::Angle:
+        value = simulation.getAngle();
+        break;
+    case ConfigKey::Mass:
+        value = simulation.getMass();
+        break;
+    case ConfigKey::Thrust:
+        value = simulation.getThrust();
+        break;
+    case ConfigKey::BurnTime:
+        value = simulation.getBurnTime();
+        break;
+    case ConfigKey::Restitution:
+        value = simulation.getRestitution();
+        break;
+    default:
+        value = 0;
+        break;
+    }
+    std::ostringstream ss;
+    ss << std::fixed << std::setprecision(2) << value;
+    return ss.str();
 }

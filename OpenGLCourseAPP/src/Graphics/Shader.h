@@ -95,5 +95,7 @@ private:
 	void addShader(GLuint theProgram, const char* shaderCode, GLenum shaderType);
 
 	void clearShader();
+
+	const char *vertexCodeSample;
 };
 

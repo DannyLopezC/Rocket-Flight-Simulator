@@ -110,9 +110,17 @@
     <ClCompile Include="src\Core\Input.cpp">
       <Filter>src\Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\Simulation\Rocket2D.cpp" />
     <ClCompile Include="src\Graphics\Arrow.cpp">
       <Filter>src\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Simulation\Rocket2D.cpp">
+      <Filter>src\Simulation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\TextRenderer.cpp">
+      <Filter>src\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\InputField.cpp">
+      <Filter>src\Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -167,9 +175,6 @@
     <ClInclude Include="src\Graphics\PrimitiveFactory.h">
       <Filter>src\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="src\Graphics\Trail.h">
-      <Filter>src\Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="src\Core\Button.h">
       <Filter>src\Core</Filter>
     </ClInclude>
@@ -179,9 +184,20 @@
     <ClInclude Include="src\Simulation\SimulationConfig.h">
       <Filter>src\Simulation</Filter>
     </ClInclude>
-    <ClInclude Include="src\Simulation\Rocket2D.h" />
     <ClInclude Include="src\Graphics\Arrow.h">
       <Filter>src\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\Trail.h">
+      <Filter>src\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Simulation\Rocket2D.h">
+      <Filter>src\Simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\TextRenderer.h">
+      <Filter>src\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\InputField.h">
+      <Filter>src\Core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

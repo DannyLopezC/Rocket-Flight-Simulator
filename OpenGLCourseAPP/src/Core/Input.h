@@ -1,6 +1,7 @@
 #pragma once
 #include <GLFW/glfw3.h>
 #include <algorithm>
+#include <vector>
 
 class Input
 {
@@ -9,6 +10,7 @@ public:
 
 	void init(GLFWwindow* window);
 
+	void beginFrame();
 	void update();
 
 	float getMouseX() const { return mouseX; }
@@ -26,6 +28,7 @@ public:
 	bool keyReleased(int key) const;
 
 	void setWindowSize(int w, int h);
+	const std::vector<unsigned int>& getCharBuffer() const { return charBuffer; }
 
 private:
 	GLFWwindow* window = nullptr;
@@ -40,4 +43,8 @@ private:
 
 	bool keyDownPrev[GLFW_KEY_LAST + 1]{};
 	bool keyDownNow[GLFW_KEY_LAST + 1]{};
+
+	std::vector<unsigned int> charBuffer;
+
+	static void charCallback(GLFWwindow* window, unsigned int codepoint);
 };

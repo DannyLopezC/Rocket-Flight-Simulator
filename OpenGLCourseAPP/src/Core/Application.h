@@ -1,5 +1,9 @@
 #pragma once
 #include <vector>
+#include <sstream>
+#include <iomanip>
+#include <algorithm>
+
 #include "Core/Button.h"
 #include "Core/Input.h"
 #include "Core/Window.h"
@@ -16,9 +20,27 @@
 #include "Graphics/PrimitiveFactory.h"
 #include "Graphics/Trail.h"
 #include "Graphics/Arrow.h"
+#include "Graphics/TextRenderer.h"
+#include "Core/InputField.h"
 
 #include "Simulation/Simulation.h"
 
+enum class ConfigKey
+{
+    Gravity,
+    Angle,
+    Mass,
+    Thrust,
+    BurnTime,
+    Restitution,
+};
+
+struct ConfigField 
+{
+    std::string label;
+    ConfigKey key;
+    InputField* inputField = nullptr;
+};
 
 class Application
 {
@@ -36,6 +58,9 @@ private:
 
     void renderLine(Mesh* mesh, glm::vec3 translate, glm::vec3 rotate, float rotationAngle,
         GLuint uniformModel, glm::vec3 scale = { 1.0f, 1.0f, 1.0f });
+
+    void applyFieldValue(const ConfigField& field);
+    std::string getFieldValue(ConfigKey key);
 
     Window mainWindow;
     std::vector<Shader*> shaderList;
@@ -71,4 +96,10 @@ private:
     Button* restartBtn;
 
     Input input;
+
+    TextRenderer* textRenderer;
+
+    std::vector<ConfigField> configFields;
+
+    const char* fontPath = "assets/fonts/DejaVuSans.ttf";
 };
