@@ -8,6 +8,7 @@ Application::Application()
 {
     floor = nullptr;
     rocket = nullptr;
+    rocketFire = nullptr;
     trail = nullptr;
     restartBtn = nullptr;
     velArrow = nullptr;
@@ -44,6 +45,9 @@ Application::~Application()
     delete textRenderer;
     textRenderer = nullptr;
 
+    delete rocketFire;
+    rocketFire = nullptr;
+
     for (auto& field : configFields)
     {
         delete field.inputField;
@@ -78,10 +82,14 @@ void Application::Init()
     inputFieldTexture = Texture("assets/textures/inputfield.png");
     inputFieldTexture.loadTextureA();
 
+    rocketTex = Texture("assets/textures/rocket.png");
+    rocketTex.loadTextureA();
+
     simulation = Simulation();
 
     floor = PrimitiveFactory::createQuad(40.0f, 2.0f);
     rocket = PrimitiveFactory::createQuad(simulation.getRocketWidth(), simulation.getRocketHeight());
+    rocketFire = PrimitiveFactory::createQuad(simulation.getRocketWidth(), simulation.getRocketHeight());
     maxHeightLine = PrimitiveFactory::createLine();
 
     shinyMaterial = Material(0.8f, 256);
@@ -168,6 +176,7 @@ void Application::Run()
     Shader* shader = shaderList[0];
     Shader* lineShader = shaderList[1];
     Shader* uiShader = shaderList[2];
+    Shader* fireShader = shaderList[4];
 
     while (!mainWindow.getShouldClose())
     {
@@ -307,9 +316,30 @@ void Application::Run()
         {
             rA = simulation.getRocketAngle() + 90.0f;
         }
-        
-        renderMesh(rocket, t, r, rA, uniformModel, shinyMaterial, plainTexture);
 
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glDepthMask(GL_FALSE);
+        
+        renderMesh(rocket, t, r, rA, uniformModel, shinyMaterial, rocketTex);
+
+        // --- Rocket Fire ---
+        if (simulation.getFlightTime() < simulation.getBurnTime() && !simulation.getSimulationEnded())
+        {
+            float angleRad = glm::radians(rA);
+            glm::vec3 rocketUp = glm::vec3(cos(angleRad - glm::half_pi<float>()), sin(angleRad - glm::half_pi<float>()), 0.0f);
+            glm::vec3 fireOffset = -rocketUp * 0.85f;
+
+
+            fireShader->useShader();
+            fireShader->setMat4("projection", worldProjection);
+            fireShader->setMat4("view", worldView);
+            glUniform1f(glGetUniformLocation(fireShader->getShaderId(), "uTime"), glfwGetTime());
+
+            renderMesh(rocketFire, t + fireOffset, r, rA, fireShader->getModelLocation(), shinyMaterial, plainTexture, glm::vec3(1, 0.5, 1));
+
+            glDepthMask(GL_TRUE);
+        }
         // --- Arrows ---
         lineShader->useShader();
         lineShader->setMat4("projection", worldProjection);
@@ -442,17 +472,21 @@ void Application::createShaders()
     shader1->createFromFiles("assets/shaders/shader.vert", "assets/shaders/shader.frag");
     shaderList.push_back(shader1);
 
-    Shader* shader2 = new Shader();
-    shader2->createFromFiles("assets/shaders/line.vert", "assets/shaders/line.frag");
-    shaderList.push_back(shader2);
+    Shader* lineShader = new Shader();
+    lineShader->createFromFiles("assets/shaders/line.vert", "assets/shaders/line.frag");
+    shaderList.push_back(lineShader);
 
-    Shader* shader3 = new Shader();
-    shader3->createFromFiles("assets/shaders/btn.vert", "assets/shaders/btn.frag");
-    shaderList.push_back(shader3);
+    Shader* btnShader = new Shader();
+    btnShader->createFromFiles("assets/shaders/btn.vert", "assets/shaders/btn.frag");
+    shaderList.push_back(btnShader);
 
-    Shader* shader4 = new Shader();
-    shader4->createFromFiles("assets/shaders/text.vert", "assets/shaders/text.frag");
-    shaderList.push_back(shader4);
+    Shader* textShader = new Shader();
+    textShader->createFromFiles("assets/shaders/text.vert", "assets/shaders/text.frag");
+    shaderList.push_back(textShader);
+
+    Shader* fireShader = new Shader();
+    fireShader->createFromFiles("assets/shaders/fire.vert", "assets/shaders/fire.frag");
+    shaderList.push_back(fireShader);
 }
 
 void Application::renderMesh(Mesh* mesh, glm::vec3 translate, glm::vec3 rotate, float rotationAngle,
@@ -465,7 +499,6 @@ void Application::renderMesh(Mesh* mesh, glm::vec3 translate, glm::vec3 rotate, 
     model = glm::rotate(model, glm::radians(rotationAngle), rotate);
     model = glm::scale(model, scale);
     glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-    mat.useMaterial(0, 0);
     tex.useTexture();
     mesh->renderMesh();
 }

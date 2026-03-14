@@ -7,7 +7,7 @@ Simulation::Simulation()
 {
 	//ball = Ball(config.throwerPos, config.v0, 0.2f);
 	rocket = Rocket2D(config.startPos, config.startVel, config.startAcc, config.angle,
-		config.mass, config.thrust, config.burnTime, 0.4f, 0.6f);
+		config.mass, config.thrust, config.burnTime, 1.0f, 1.5f);
 
 	maxHeight = 0;
 	range = 0; 

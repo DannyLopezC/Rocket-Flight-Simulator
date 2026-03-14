@@ -69,11 +69,13 @@ private:
     Texture plainTexture;
     Texture resetTexture;
     Texture inputFieldTexture;
+    Texture rocketTex;
     Material shinyMaterial;
     Material dullMaterial;
 
     Mesh* floor;
     Mesh* rocket;
+    Mesh* rocketFire;
     Mesh* maxHeightLine;
     
     DirectionalLight mainLight;
