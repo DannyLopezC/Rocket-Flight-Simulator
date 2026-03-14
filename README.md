@@ -1,182 +1,239 @@
-# 🏀 Physics Simulation -- OpenGL Implementation
+# 🚀 Rocket Flight Simulator --- C++ / OpenGL
 
-This project is a physics simulation developed with **C++ and OpenGL**.\
-The goal of the project is to simulate **projectile motion and collision
-behavior** while applying clean architecture and object-oriented
-programming principles.
+A **2D rocket flight simulator** built with **C++ and OpenGL**, focused
+on real-time physics, interactive parameter tuning, and modular
+engine-style architecture.
 
-------------------------------------------------------------------------
+The simulator allows experimenting with different physical parameters
+such as gravity, thrust, burn time, launch angle, mass, and restitution
+to observe how they affect the rocket's trajectory.
 
-## 🎯 Project Objective
-
-Develop an interactive physics simulation that demonstrates:
-
--   Projectile motion under gravity.
--   Collision and bouncing behavior.
--   Real-time parameter experimentation.
--   Clean and maintainable C++ architecture.
-
-The project focuses on separating **simulation logic, rendering, input
-handling, and UI systems**.
+The project was built as part of my transition toward **graphics
+programming and low-level simulation systems**, implementing everything
+from rendering to UI manually using OpenGL.
 
 ------------------------------------------------------------------------
 
-## 📌 Features
+# Preview
 
--   Projectile motion simulation.
--   Ball collision with floor and wall.
--   Adjustable physics parameters.
--   Trajectory trail visualization.
--   Interactive UI system.
--   Restart button to reset the simulation.
+![Rocket Flight Simulator](demo_video.gif)
 
 ------------------------------------------------------------------------
 
-## 🖼️ Preview
+# Features
 
-![Simulation](https://github.com/DannyLopezC/OpenGLCourseAPP/blob/main/demo_video.gif)
+## Physics Simulation
+
+The rocket's flight is simulated using configurable physical parameters:
+
+-   Gravity
+-   Thrust
+-   Burn time
+-   Launch angle
+-   Mass
+-   Restitution (bounce on ground)
+-   Drag
+
+This allows experimentation with how different values influence the
+rocket's trajectory.
 
 ------------------------------------------------------------------------
 
-## 🔧 Requirements
+## Interactive Parameter Tuning
 
-This project requires:
+Parameters can be modified directly through input fields in the UI,
+allowing **live experimentation** with the simulation.
 
--   C++17 or newer
+Editable values include:
+
+-   Gravity (m/s²)
+-   Angle (degrees)
+-   Mass (kg)
+-   Thrust (N)
+-   Burn Time (seconds)
+-   Restitution coefficient
+
+------------------------------------------------------------------------
+
+## Trajectory Visualization
+
+The simulator visualizes the rocket's path in real time using a **trail
+renderer**, allowing clear observation of the flight arc and landing
+point.
+
+------------------------------------------------------------------------
+
+## Physics Debug Visualization
+
+To help understand the motion, the simulator includes visual debugging
+tools:
+
+-   Velocity vector arrow
+-   Acceleration vector arrow
+
+These update dynamically during flight.
+
+------------------------------------------------------------------------
+
+## Flight Metrics
+
+The simulator tracks and displays important flight data:
+
+-   Maximum height
+-   Horizontal range
+-   Flight time
+
+------------------------------------------------------------------------
+
+## Custom UI System
+
+A lightweight UI framework built directly in OpenGL includes:
+
+-   Input fields
+-   Buttons
+-   Text rendering
+-   Parameter editing
+
+This was implemented without external UI libraries to better understand
+rendering and input pipelines.
+
+------------------------------------------------------------------------
+
+# Tech Stack
+
+-   C++17
 -   OpenGL 3.3+
--   GLFW
--   GLM
+-   GLFW (windowing and input)
+-   GLM (math library)
+-   Custom shaders
+-   STB Image
+-   FreeType (text rendering)
 
 ------------------------------------------------------------------------
 
-## ▶️ How to run the project
+# Project Architecture
 
-1.  Clone this repository:
+The codebase is organized into modular systems to separate
+responsibilities and keep the project scalable.
 
-git clone https://github.com/DannyLopezC/PhysicsSimulator.git cd
-PhysicsSimulator
+    src/
+     ├── Core
+     │    ├── Application
+     │    ├── InputField
+     │    ├── Button
+     │    └── UI systems
+     │
+     ├── Graphics
+     │    ├── Shader
+     │    ├── Mesh
+     │    ├── Texture
+     │    ├── TextRenderer
+     │    ├── TrailRenderer
+     │    ├── Arrow
+     │    └── PrimitiveFactory
+     │
+     ├── Simulation
+     │    ├── Rocket2D
+     │    └── Physics logic
+     │
+     └── main.cpp
 
-2.  Open the project with your **C++ IDE (Visual Studio recommended)**.
+## Core
 
-3.  Build the project.
+Handles the application lifecycle and user interaction:
 
-4.  Run the executable.
+-   Window initialization
+-   UI input handling
+-   Button and field management
+-   Simulation control
 
-------------------------------------------------------------------------
+## Graphics
 
-## 🎮 Controls
+Responsible for rendering systems:
 
-Restart Simulation → Mouse click on **Reset button**
+-   Mesh and shader management
+-   Textures and materials
+-   Trail visualization
+-   Debug arrows
+-   Primitive generation
+-   Text rendering
 
-*(More controls may be added as UI features grow.)*
+## Simulation
 
-------------------------------------------------------------------------
+Contains the physics logic:
 
-## 🧠 Concepts Used
-
--   Object-Oriented Programming
--   Real-time physics simulation
--   Projectile motion mathematics
--   Collision response
--   OpenGL rendering pipeline
--   Custom UI system
--   Input management
-
-------------------------------------------------------------------------
-
-## 🏗 Architecture
-
-The project follows a modular architecture that separates the physics
-simulation, rendering pipeline, input handling, and user interface
-systems. This structure helps keep the simulation logic independent from
-the graphics layer.
-
-### Simulation System
-
-The **simulation module** contains the physics logic responsible for the
-projectile behavior.
-
-Responsibilities include:
-
--   Updating object position using time integration
--   Applying gravitational acceleration
--   Handling collisions with floor and walls
--   Applying bounce response using restitution
-
-This layer is independent from OpenGL rendering, allowing the physics
-model to remain clear and testable.
-
-------------------------------------------------------------------------
-
-### Rendering System
-
-Rendering is handled using **OpenGL**, responsible for drawing the
-simulation objects and visual elements.
-
-Responsibilities include:
-
--   Drawing the projectile and environment
--   Rendering trajectory trails
--   Managing shader programs
--   Handling transformation matrices
-
-The rendering layer only visualizes the current simulation state.
+-   Rocket motion
+-   Thrust application
+-   Gravity
+-   Collision with the floor
+-   Simulation update loop
 
 ------------------------------------------------------------------------
 
-### Input System
+# What I Learned
 
-The input system handles user interaction with the simulation.
+Building this project helped me practice several important areas related
+to **graphics and simulation programming**:
 
-Responsibilities include:
-
--   Detecting mouse input
--   Handling UI button interactions
--   Restarting the simulation
--   Passing input events to the application controller
-
-Separating input logic prevents UI interactions from interfering with
-simulation logic.
+-   Structuring a medium-sized C++ OpenGL project
+-   Separating rendering systems from simulation logic
+-   Implementing a small UI framework from scratch
+-   Visualizing physics data using debug tools
+-   Working with transformations and vectors
+-   Iterating on architecture as features grow
 
 ------------------------------------------------------------------------
 
-### UI System
+# How to Run
 
-A simple UI system is implemented to allow runtime interaction with the
-simulation.
+### 1. Clone the repository
 
-Features include:
+    git clone https://github.com/DannyLopezC/PhysicsSimulator.git
+    cd PhysicsSimulator
 
--   Reset button to restart the simulation
--   Parameter interaction through UI elements
--   Visual feedback for user actions
+### 2. Open the Visual Studio solution
 
-The UI layer is designed to remain independent from both the physics and
-rendering systems.
+Open the `.sln` file in Visual Studio.
 
-------------------------------------------------------------------------
+### 3. Build the project
 
-### Application Controller
+Compile the solution using the default configuration.
 
-The main application acts as the central coordinator of the program.
+### 4. Run
 
-Responsibilities include:
-
--   Initializing systems
--   Updating the physics simulation
--   Triggering rendering
--   Processing user input
--   Managing application state
-
-This structure ensures that each subsystem remains modular and
-maintainable.
+Launch the executable from Visual Studio.
 
 ------------------------------------------------------------------------
 
-## 📚 Credits
+# Controls
 
-Project developed as a programming exercise focused on **physics
-simulation and graphics programming with OpenGL**.
+-   Edit simulation parameters through the input fields
+-   Press **RESET** to restart the simulation with the current values
 
-Author: **DannyLopezC**\
-GitHub: https://github.com/DannyLopezC
+------------------------------------------------------------------------
+
+# Future Improvements
+
+Possible extensions for the simulator:
+
+-   Camera zoom and pan
+-   Real-time graphs (height vs time)
+-   Multiple rocket types
+-   Improved UI layout and styling
+-   Exporting simulation data
+
+------------------------------------------------------------------------
+
+# Author
+
+Danny López Cárdenas\
+Game Developer transitioning into Graphics Programming
+
+GitHub\
+https://github.com/DannyLopezC
+
+Portfolio\
+https://dannylopezc.github.io/
+
+LinkedIn\
+https://www.linkedin.com/in/dannylopezc
